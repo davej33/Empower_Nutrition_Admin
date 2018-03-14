@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void viewOrders(View view) {
+        startActivity(new Intent(MainActivity.this,OpenOrdersActivity.class));
     }
 
     public void addFoodItem(View view) {

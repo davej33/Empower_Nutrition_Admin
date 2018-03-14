@@ -39,7 +39,7 @@ private static final String LOG_TAG = AddFoodItemActivity.class.getSimpleName();
         mName = findViewById(R.id.itemName);
         mDescription = findViewById(R.id.itemDescrip);
         mPrice = findViewById(R.id.itemPrice);
-        mStorageReference = FirebaseStorage.getInstance().getReference();
+        mStorageReference = FirebaseStorage.getInstance().getReference().child("Item");
         mRef = FirebaseDatabase.getInstance().getReference("Item");
     }
 
@@ -64,9 +64,11 @@ private static final String LOG_TAG = AddFoodItemActivity.class.getSimpleName();
         final String desc_text = mDescription.getText().toString().trim();
         final String price_text = mPrice.getText().toString().trim();
 
+        // if EditText fields aren't empty
         if(!TextUtils.isEmpty(name_text) && !TextUtils.isEmpty(desc_text) && !TextUtils.isEmpty(price_text)){
-            Log.i(LOG_TAG,"check1 ----------------- ");
+
             StorageReference filepath = mStorageReference.child(uri.getLastPathSegment());
+
             filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
