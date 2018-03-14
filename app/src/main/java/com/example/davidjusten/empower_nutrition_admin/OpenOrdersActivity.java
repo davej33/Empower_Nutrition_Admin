@@ -1,5 +1,6 @@
 package com.example.davidjusten.empower_nutrition_admin;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,17 +14,18 @@ import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-
-import java.nio.FloatBuffer;
 
 public class OpenOrdersActivity extends AppCompatActivity {
 
     private RecyclerView mOrderRV;
     private DatabaseReference mDb;
+    private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseRecyclerAdapter<Order, OrderViewHolder> adapter;
+    private FirebaseAuth mAuth;
 
 
     @Override
@@ -36,15 +38,26 @@ public class OpenOrdersActivity extends AppCompatActivity {
         mOrderRV.setLayoutManager(new LinearLayoutManager(this));
 
         mDb = FirebaseDatabase.getInstance().getReference().child("Orders");
-        String s = mDb.child("itemName").toString();
-        Log.i("tag","itemName test --------- " + s);
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (firebaseAuth.getCurrentUser() == null) {
+                    Intent loginIntent = new Intent(OpenOrdersActivity.this, SignupActivity.class);
+                    loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(loginIntent);
+
+                }
+            }
+        };
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-//        mAuth.addAuthStateListener(mAuthListener);
+
+        mAuth.addAuthStateListener(mAuthListener);
         Query query = mDb;
         FirebaseRecyclerOptions<Order> options = new FirebaseRecyclerOptions.Builder<Order>()
                 .setQuery(query, Order.class)
@@ -52,13 +65,11 @@ public class OpenOrdersActivity extends AppCompatActivity {
 
         adapter = new FirebaseRecyclerAdapter<Order, OrderViewHolder>(options) {
 
-            Order mOrder;
             @Override
             protected void onBindViewHolder(@NonNull OrderViewHolder holder, int position, @NonNull Order model) {
-                holder.setItem(model.getItem());
-                holder.setUsername(model.getUserame());
-
-                mOrder = model;
+                holder.setItem(model.getItemName());
+                holder.setUsername(model.getUserName());
+                Log.i("This", "desc check: " + model.getItemName());
             }
 
             @NonNull
@@ -68,8 +79,9 @@ public class OpenOrdersActivity extends AppCompatActivity {
                 return new OrderViewHolder(view);
             }
         };
-        mOrderRV.setAdapter(adapter);
         adapter.startListening();
+        mOrderRV.setAdapter(adapter);
+
     }
 
     @Override

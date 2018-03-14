@@ -15,13 +15,14 @@
         android:id="@+id/loginUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter username"/>
+        android:text="admin2@gmail.com"/>
 
     <EditText
         android:id="@+id/loginPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter password"/>
+        android:hint="Enter password"
+        android:text="admin123"/>
     <Button
         android:id="@+id/signinButton"
         android:layout_width="match_parent"

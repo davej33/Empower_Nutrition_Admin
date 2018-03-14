@@ -6,29 +6,29 @@ package com.example.davidjusten.empower_nutrition_admin;
 
 public class Order {
 
-    private String mUserame;
+    private String mUsername;
     private String mItem;
 
     public Order(){}
 
-    public Order(String username, String item){
-        mUserame = username;
-        mItem = item;
+    public Order(String userName, String itemName){
+        mUsername = userName;
+        mItem = itemName;
     }
 
-    public String getUserame() {
-        return mUserame;
+    public String getUserName() {
+        return mUsername;
     }
 
-    public void setUserame(String mUserame) {
-        this.mUserame = mUserame;
+    public void setUserName(String mUsername) {
+        this.mUsername = mUsername;
     }
 
-    public String getItem() {
+    public String getItemName() {
         return mItem;
     }
 
-    public void setItem(String mItem) {
+    public void setItemName(String mItem) {
         this.mItem = mItem;
     }
 }
