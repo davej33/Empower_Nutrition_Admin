@@ -9,12 +9,11 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.davidjusten.empower_nutrition_admin.helpers.OnSwipeTouchListener;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,7 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
-public class OpenOrdersActivity extends AppCompatActivity{
+public class OpenOrdersActivity extends AppCompatActivity {
 
     private RecyclerView mOrderRV;
     private DatabaseReference mDb;
@@ -72,12 +71,21 @@ public class OpenOrdersActivity extends AppCompatActivity{
         adapter = new FirebaseRecyclerAdapter<Order, OrderViewHolder>(options) {
 
             @Override
-            protected void onBindViewHolder(@NonNull OrderViewHolder holder, int position, @NonNull Order model) {
+            protected void onBindViewHolder(@NonNull OrderViewHolder holder, int position, @NonNull final Order model) {
                 holder.setItem(model.getItemName());
                 holder.setUsername(model.getUserName());
                 Log.i("This", "desc check: " + model.getItemName());
 
-                holder.mView.setOnTouchListener(new OnSwipeTouchListener(OpenOrdersActivity.this));
+                final String item_key = getRef(position).getKey();
+                holder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent orderDetaiIntent = new Intent(OpenOrdersActivity.this, OrderDetailActivity.class);
+                        orderDetaiIntent.putExtra("item_key", item_key);
+                        orderDetaiIntent.putExtra("item_name", model.getItemName());
+                        startActivity(orderDetaiIntent);
+                    }
+                });
             }
 
             @NonNull

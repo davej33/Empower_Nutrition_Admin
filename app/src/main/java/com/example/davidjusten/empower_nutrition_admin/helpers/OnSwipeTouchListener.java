@@ -1,4 +1,4 @@
-package com.example.davidjusten.empower_nutrition_admin;
+package com.example.davidjusten.empower_nutrition_admin.helpers;
 
 import android.content.Context;
 import android.view.GestureDetector;
