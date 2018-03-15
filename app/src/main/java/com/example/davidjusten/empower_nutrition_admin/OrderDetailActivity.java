@@ -18,9 +18,10 @@ import com.squareup.picasso.Picasso;
 
 public class OrderDetailActivity extends AppCompatActivity {
 
-    private String mItem_key, mItem_name, mImage_string;
-    private TextView mCustomerTV;
-    private TextView mItemTV;
+    private static final String LOG_TAG = OrderDetailActivity.class.getSimpleName();
+
+    private String mItem_key, mItem_name, mItem_time, mImage_string;
+    private TextView mCustomerTV, mItemTV, mOrderTime;
     private ImageView mImageView;
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
@@ -35,6 +36,7 @@ public class OrderDetailActivity extends AppCompatActivity {
         mCustomerTV = findViewById(R.id.orderDetailCustomer);
         mItemTV = findViewById(R.id.orderDetailItem);
         mImageView = findViewById(R.id.orderDetailImage);
+        mOrderTime = findViewById(R.id.orderDetailTime);
 
         // get Firebase objects
         mAuth = FirebaseAuth.getInstance();
@@ -43,6 +45,8 @@ public class OrderDetailActivity extends AppCompatActivity {
         // get item key from intent
         mItem_key = getIntent().getStringExtra("item_key");
         mItem_name = getIntent().getStringExtra("item_name");
+        mItem_time = getIntent().getStringExtra("item_time");
+        Log.i(LOG_TAG,"item time ---- " + mItem_time);
 
         // get current user
         mCurrentUser = mAuth.getCurrentUser();
@@ -59,6 +63,7 @@ public class OrderDetailActivity extends AppCompatActivity {
 
                 mCustomerTV.setText(mCurrentUser.getEmail());
                 mItemTV.setText(mItem_name);
+                mOrderTime.setText(mItem_time);
                 Picasso.get().load(mImage_string).into(mImageView); // Todo: add defaults
 
             }

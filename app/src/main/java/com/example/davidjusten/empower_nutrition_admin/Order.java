@@ -8,12 +8,15 @@ public class Order {
 
     private String mUsername;
     private String mItem;
+    private String mTime;
 
-    public Order(){}
+    public Order() {
+    }
 
-    public Order(String userName, String itemName){
+    public Order(String userName, String itemName, String time) {
         mUsername = userName;
         mItem = itemName;
+        mTime = time;
     }
 
     public String getUserName() {
@@ -30,5 +33,13 @@ public class Order {
 
     public void setItemName(String mItem) {
         this.mItem = mItem;
+    }
+
+    public String getTime() {
+        return mTime;
+    }
+
+    public void setTime(String mTime) {
+        this.mTime = mTime;
     }
 }

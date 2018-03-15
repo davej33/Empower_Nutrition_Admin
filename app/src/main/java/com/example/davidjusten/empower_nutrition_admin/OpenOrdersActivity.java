@@ -23,6 +23,7 @@ import com.google.firebase.database.Query;
 
 public class OpenOrdersActivity extends AppCompatActivity {
 
+    private static final String LOG_TAG = OpenOrdersActivity.class.getSimpleName();
     private RecyclerView mOrderRV;
     private DatabaseReference mDb;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -74,7 +75,7 @@ public class OpenOrdersActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull OrderViewHolder holder, int position, @NonNull final Order model) {
                 holder.setItem(model.getItemName());
                 holder.setUsername(model.getUserName());
-                Log.i("This", "desc check: " + model.getItemName());
+                holder.setTime(model.getTime());
 
                 final String item_key = getRef(position).getKey();
                 holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +84,8 @@ public class OpenOrdersActivity extends AppCompatActivity {
                         Intent orderDetaiIntent = new Intent(OpenOrdersActivity.this, OrderDetailActivity.class);
                         orderDetaiIntent.putExtra("item_key", item_key);
                         orderDetaiIntent.putExtra("item_name", model.getItemName());
+                        orderDetaiIntent.putExtra("item_time", model.getTime());
+                        Log.i(LOG_TAG, "item time ------- " + model.getTime());
                         startActivity(orderDetaiIntent);
                     }
                 });
@@ -124,5 +127,11 @@ public class OpenOrdersActivity extends AppCompatActivity {
             TextView item_text = mView.findViewById(R.id.orderItem);
             item_text.setText(item);
         }
+
+        public void setTime(String time){
+            TextView time_text = mView.findViewById(R.id.orderTime);
+            time_text.setText(time);
+        }
+
     }
 }
