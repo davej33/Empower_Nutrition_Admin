@@ -25,7 +25,7 @@ public class OpenOrdersActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = OpenOrdersActivity.class.getSimpleName();
     private RecyclerView mOrderRV;
-    private DatabaseReference mDb;
+    private DatabaseReference mDbRefOrders;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseRecyclerAdapter<Order, OrderViewHolder> adapter;
     private FirebaseAuth mAuth;
@@ -41,7 +41,7 @@ public class OpenOrdersActivity extends AppCompatActivity {
         mOrderRV.setHasFixedSize(true);
         mOrderRV.setLayoutManager(new LinearLayoutManager(this));
 
-        mDb = FirebaseDatabase.getInstance().getReference().child("Orders");
+        mDbRefOrders = FirebaseDatabase.getInstance().getReference().child("Orders");
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -64,7 +64,7 @@ public class OpenOrdersActivity extends AppCompatActivity {
 
 
         mAuth.addAuthStateListener(mAuthListener);
-        Query query = mDb;
+        Query query = mDbRefOrders;
         FirebaseRecyclerOptions<Order> options = new FirebaseRecyclerOptions.Builder<Order>()
                 .setQuery(query, Order.class)
                 .build();
@@ -81,12 +81,13 @@ public class OpenOrdersActivity extends AppCompatActivity {
                 holder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent orderDetaiIntent = new Intent(OpenOrdersActivity.this, OrderDetailActivity.class);
-                        orderDetaiIntent.putExtra("item_key", item_key);
-                        orderDetaiIntent.putExtra("item_name", model.getItemName());
-                        orderDetaiIntent.putExtra("item_time", model.getTime());
+                        Intent orderDetailIntent = new Intent(OpenOrdersActivity.this, OrderDetailActivity.class);
+                        orderDetailIntent.putExtra("item_key", item_key);
+                        orderDetailIntent.putExtra("item_name", model.getItemName());
+                        orderDetailIntent.putExtra("item_time", model.getTime());
+                        orderDetailIntent.putExtra("user_name", model.getUserName());
                         Log.i(LOG_TAG, "item time ------- " + model.getTime());
-                        startActivity(orderDetaiIntent);
+                        startActivity(orderDetailIntent);
                     }
                 });
             }

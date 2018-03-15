@@ -20,12 +20,12 @@ public class OrderDetailActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = OrderDetailActivity.class.getSimpleName();
 
-    private String mItem_key, mItem_name, mItem_time, mImage_string;
+    private String mItem_key, mItem_name, mItem_time, mUser_name, mImage_string;
     private TextView mCustomerTV, mItemTV, mOrderTime;
     private ImageView mImageView;
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
-    private DatabaseReference user_data, mDbRef;
+    private DatabaseReference user_data, mDbRefItem, mDbRefOrder, mDbReady;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,28 +40,27 @@ public class OrderDetailActivity extends AppCompatActivity {
 
         // get Firebase objects
         mAuth = FirebaseAuth.getInstance();
-        mDbRef = FirebaseDatabase.getInstance().getReference().child("Item");
+        mDbRefItem = FirebaseDatabase.getInstance().getReference().child("Item");
+        mDbRefOrder = FirebaseDatabase.getInstance().getReference().child("Orders");
 
-        // get item key from intent
+        // get item data from intent
         mItem_key = getIntent().getStringExtra("item_key");
         mItem_name = getIntent().getStringExtra("item_name");
         mItem_time = getIntent().getStringExtra("item_time");
-        Log.i(LOG_TAG,"item time ---- " + mItem_time);
+        mUser_name = getIntent().getStringExtra("user_name");
+
+        // get order key
 
         // get current user
         mCurrentUser = mAuth.getCurrentUser();
         user_data = FirebaseDatabase.getInstance().getReference().child(mCurrentUser.getUid());
 
         // extract data
-        mDbRef.child(mItem_key).addValueEventListener(new ValueEventListener() {
+        mDbRefItem.child(mItem_key).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-//                mItem_name = (String) dataSnapshot.child("name").getValue();
-                Log.i("log", "mItem_name: " + mItem_name);
-                mImage_string = (String) dataSnapshot.child("image").getValue();
-                Log.i("log", "image string: " + mImage_string);
 
-                mCustomerTV.setText(mCurrentUser.getEmail());
+                mCustomerTV.setText(mUser_name);
                 mItemTV.setText(mItem_name);
                 mOrderTime.setText(mItem_time);
                 Picasso.get().load(mImage_string).into(mImageView); // Todo: add defaults
@@ -77,6 +76,24 @@ public class OrderDetailActivity extends AppCompatActivity {
     }
 
     public void orderReadyClicked(View view) {
+        mDbReady = FirebaseDatabase.getInstance().getReference().child("item_ready");
+        mDbRefOrder.child(mItem_key).removeValue();
+        final DatabaseReference dbRef = mDbReady.push();
+        user_data.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                dbRef.child("order_key").setValue(mItem_key);
+                dbRef.child("user_name").setValue(mUser_name);
+                dbRef.child("item_name").setValue(mItem_name);
+                dbRef.child("item_time").setValue(mItem_time);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void orderCancelClicked(View view) {
