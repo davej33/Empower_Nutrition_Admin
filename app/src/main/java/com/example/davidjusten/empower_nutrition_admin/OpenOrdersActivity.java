@@ -7,10 +7,13 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -19,13 +22,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
-public class OpenOrdersActivity extends AppCompatActivity {
+public class OpenOrdersActivity extends AppCompatActivity{
 
     private RecyclerView mOrderRV;
     private DatabaseReference mDb;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseRecyclerAdapter<Order, OrderViewHolder> adapter;
     private FirebaseAuth mAuth;
+    private GestureDetector mDetector;
 
 
     @Override
@@ -50,7 +54,9 @@ public class OpenOrdersActivity extends AppCompatActivity {
                 }
             }
         };
+
     }
+
 
     @Override
     protected void onStart() {
@@ -70,6 +76,8 @@ public class OpenOrdersActivity extends AppCompatActivity {
                 holder.setItem(model.getItemName());
                 holder.setUsername(model.getUserName());
                 Log.i("This", "desc check: " + model.getItemName());
+
+                holder.mView.setOnTouchListener(new OnSwipeTouchListener(OpenOrdersActivity.this));
             }
 
             @NonNull

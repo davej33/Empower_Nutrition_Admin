@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -19,6 +21,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
+
 public class AddFoodItemActivity extends AppCompatActivity {
 private static final String LOG_TAG = AddFoodItemActivity.class.getSimpleName();
     private ImageButton mFoodImageButton;
@@ -27,7 +31,7 @@ private static final String LOG_TAG = AddFoodItemActivity.class.getSimpleName();
     private Uri uri;
     private StorageReference mStorageReference;
     private DatabaseReference mRef;
-    private FirebaseDatabase mFirebaseDb;
+    private Spinner mSpinner;
 
 
 
@@ -41,6 +45,11 @@ private static final String LOG_TAG = AddFoodItemActivity.class.getSimpleName();
         mPrice = findViewById(R.id.itemPrice);
         mStorageReference = FirebaseStorage.getInstance().getReference().child("Item");
         mRef = FirebaseDatabase.getInstance().getReference("Item");
+
+        // spinner
+        mSpinner = findViewById(R.id.itemTypeSpinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.itemType_array, android.R.layout.simple_dropdown_item_1line);
+        mSpinner.setAdapter(adapter);
     }
 
     public void imageButtonClicked(View view) {
@@ -63,6 +72,7 @@ private static final String LOG_TAG = AddFoodItemActivity.class.getSimpleName();
         final String name_text = mName.getText().toString().trim();
         final String desc_text = mDescription.getText().toString().trim();
         final String price_text = mPrice.getText().toString().trim();
+        final String type = mSpinner.getSelectedItem().toString();
 
         // if EditText fields aren't empty
         if(!TextUtils.isEmpty(name_text) && !TextUtils.isEmpty(desc_text) && !TextUtils.isEmpty(price_text)){
@@ -79,6 +89,7 @@ private static final String LOG_TAG = AddFoodItemActivity.class.getSimpleName();
                     newPost.child("desc").setValue(desc_text);
                     newPost.child("price").setValue(price_text);
                     newPost.child("image").setValue(downloadUrl.toString());
+                    newPost.child("type").setValue(type);
                 }
             });
         }

@@ -1,2 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string-array name="itemType_array">
+        <item>Juice</item>
+        <item>Smoothie</item>
+        <item>Shot</item>
+        <item>Bowl</item>
+    </string-array>
+</resources>
