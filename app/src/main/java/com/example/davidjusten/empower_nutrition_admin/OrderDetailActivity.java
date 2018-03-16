@@ -25,7 +25,7 @@ public class OrderDetailActivity extends AppCompatActivity {
     private ImageView mImageView;
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
-    private DatabaseReference user_data, mDbRefItem, mDbRefOrder, mDbReady;
+    private DatabaseReference mDbUserData, mDbRefItem, mDbRefOrder, mDbCanceled, mDbReady;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class OrderDetailActivity extends AppCompatActivity {
 
         // get current user
         mCurrentUser = mAuth.getCurrentUser();
-        user_data = FirebaseDatabase.getInstance().getReference().child(mCurrentUser.getUid());
+        mDbUserData = FirebaseDatabase.getInstance().getReference().child(mCurrentUser.getUid());
 
         // extract data
         mDbRefItem.child(mItem_key).addValueEventListener(new ValueEventListener() {
@@ -76,10 +76,16 @@ public class OrderDetailActivity extends AppCompatActivity {
     }
 
     public void orderReadyClicked(View view) {
-        mDbReady = FirebaseDatabase.getInstance().getReference().child("item_ready");
+
+        // remove value from order bucket
         mDbRefOrder.child(mItem_key).removeValue();
+
+        // ref to item ready bucket
+        mDbReady = FirebaseDatabase.getInstance().getReference().child("item_ready");
+
+        // add
         final DatabaseReference dbRef = mDbReady.push();
-        user_data.addValueEventListener(new ValueEventListener() {
+        mDbUserData.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 dbRef.child("order_key").setValue(mItem_key);
@@ -97,6 +103,27 @@ public class OrderDetailActivity extends AppCompatActivity {
     }
 
     public void orderCancelClicked(View view) {
+
+        mDbRefOrder.child(mItem_key).removeValue();
+
+        mDbCanceled = FirebaseDatabase.getInstance().getReference().child("item_canceled");
+
+        final DatabaseReference dbRefCancel = mDbCanceled.push();
+        mDbUserData.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                dbRefCancel.child("order_key").setValue(mItem_key);
+                dbRefCancel.child("user_name").setValue(mUser_name);
+                dbRefCancel.child("item_name").setValue(mItem_name);
+                dbRefCancel.child("item_time").setValue(mItem_time);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     public void orderNoShowClicked(View view) {
