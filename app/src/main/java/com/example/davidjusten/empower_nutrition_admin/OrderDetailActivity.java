@@ -125,7 +125,4 @@ public class OrderDetailActivity extends AppCompatActivity {
         });
 
     }
-
-    public void orderNoShowClicked(View view) {
-    }
 }

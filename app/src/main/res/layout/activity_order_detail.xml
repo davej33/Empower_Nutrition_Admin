@@ -42,11 +42,5 @@
         android:onClick="orderCancelClicked"
         android:text="Cancel" />
 
-    <Button
-        android:id="@+id/orderNoShow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:onClick="orderNoShowClicked"
-        android:text="No Show" />
+
 </LinearLayout>
