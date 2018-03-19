@@ -2,6 +2,7 @@ package com.example.davidjusten.empower_nutrition_admin;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
@@ -17,13 +18,20 @@ import java.util.List;
 
 public class OpenOrders2Activity extends AppCompatActivity {
 
-    private RecyclerView mRv;
     private List<Food> mList;
+    private RecyclerView mRv;
+    private Order2Adapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_orders2);
+
+        mRv = findViewById(R.id.open_orders2_RV);
+        mRv.setLayoutManager(new LinearLayoutManager(this));
+        mRv.setHasFixedSize(true);
+        mAdapter = new Order2Adapter();
+        mRv.setAdapter(mAdapter);
 
         mList = new ArrayList<>();
 
@@ -45,6 +53,9 @@ public class OpenOrders2Activity extends AppCompatActivity {
                     mList.add(f);
 
                 }
+
+                Order2Adapter.setmOrderList(mList);
+                mAdapter.notifyDataSetChanged();
                 Log.i("OO2", "List count: " + mList.size());
             }
 
@@ -55,7 +66,21 @@ public class OpenOrders2Activity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    String name = data.child("name").getValue().toString();
+                    String desc = data.child("desc").getValue().toString();
+                    String image = data.child("image").getValue().toString();
+                    String price = data.child("price").getValue().toString();
+                    Long quant = (Long) data.child("quantity").getValue();
+                    String type = data.child("type").getValue().toString();
 
+                    Food f = new Food(name, price, desc, quant, image, type);
+                    mList.add(f);
+
+                }
+
+                Order2Adapter.setmOrderList(mList);
+                mAdapter.notifyDataSetChanged();
             }
 
             @Override
