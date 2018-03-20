@@ -2,6 +2,7 @@ package com.example.davidjusten.empower_nutrition_admin;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,7 +78,7 @@ public class Order2Adapter extends RecyclerView.Adapter<Order2Adapter.Order2View
         TextView orderTime;
         TextView orderCustomer;
         TextView orderId;
-        LinearLayout itemLayout;
+        ConstraintLayout itemLayout;
 
         public Order2ViewHolder(View itemView) {
             super(itemView);

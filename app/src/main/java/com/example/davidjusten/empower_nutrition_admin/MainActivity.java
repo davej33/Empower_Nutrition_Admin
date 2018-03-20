@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,8 +30,10 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null) {
                     // signed in
+                    Toast.makeText(MainActivity.this, "signed in", Toast.LENGTH_SHORT).show();
 
                 } else {
+                    Toast.makeText(MainActivity.this, "NOT signed in", Toast.LENGTH_SHORT).show();
                     // not signed in
                     startActivityForResult(
                             AuthUI.getInstance()
