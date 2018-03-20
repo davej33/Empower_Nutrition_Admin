@@ -30,26 +30,25 @@ public class OpenOrders2Activity extends AppCompatActivity {
         mRv = findViewById(R.id.open_orders2_RV);
         mRv.setLayoutManager(new LinearLayoutManager(this));
         mRv.setHasFixedSize(true);
-        mAdapter = new Order2Adapter();
+        mAdapter = new Order2Adapter(this);
         mRv.setAdapter(mAdapter);
 
         mList = new ArrayList<>();
 
         DatabaseReference mOrdersRef = FirebaseDatabase.getInstance().getReference().child("Orders");
-        Query q = mOrdersRef;
-        q.addChildEventListener(new ChildEventListener() {
+        Query query = mOrdersRef;
+        query.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Log.i("OO2", "children count: " + dataSnapshot.getChildrenCount());
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    String name = data.child("name").getValue().toString();
-                    String desc = data.child("desc").getValue().toString();
-                    String image = data.child("image").getValue().toString();
-                    String price = data.child("price").getValue().toString();
-                    Long quant = (Long) data.child("quantity").getValue();
-                    String type = data.child("type").getValue().toString();
+                    String item = data.child("name").getValue().toString();
+                    String user = data.child("user").getValue().toString();
+                    String quant = data.child("quantity").getValue().toString();
+                    String time = data.child("time").getValue().toString();
+                    String orderId = data.child("orderID").getValue().toString();
 
-                    Food f = new Food(name, price, desc, quant, image, type);
+                    Food f = new Food(user, item, quant, time, orderId);
                     mList.add(f);
 
                 }
@@ -67,14 +66,13 @@ public class OpenOrders2Activity extends AppCompatActivity {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    String name = data.child("name").getValue().toString();
-                    String desc = data.child("desc").getValue().toString();
-                    String image = data.child("image").getValue().toString();
-                    String price = data.child("price").getValue().toString();
-                    Long quant = (Long) data.child("quantity").getValue();
-                    String type = data.child("type").getValue().toString();
+                    String item = data.child("name").getValue().toString();
+                    String user = data.child("user").getValue().toString();
+                    String quant = data.child("quantity").getValue().toString();
+                    String time = data.child("time").getValue().toString();
+                    String orderId = data.child("orderID").getValue().toString();
 
-                    Food f = new Food(name, price, desc, quant, image, type);
+                    Food f = new Food(user, item, quant, time, orderId);
                     mList.add(f);
 
                 }

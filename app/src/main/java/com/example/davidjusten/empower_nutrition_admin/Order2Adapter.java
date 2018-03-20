@@ -1,10 +1,12 @@
 package com.example.davidjusten.empower_nutrition_admin;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -16,7 +18,11 @@ import java.util.List;
 public class Order2Adapter extends RecyclerView.Adapter<Order2Adapter.Order2ViewHolder> {
 
     private static List<Food> mOrderList;
+    private static Context mContext;
 
+    public Order2Adapter(Context context){
+        mContext = context;
+    }
     @NonNull
     @Override
     public Order2ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -29,8 +35,22 @@ public class Order2Adapter extends RecyclerView.Adapter<Order2Adapter.Order2View
     public void onBindViewHolder(@NonNull Order2ViewHolder holder, int position) {
         Food f = mOrderList.get(position);
 
-        holder.orderItem.setText(f.getName());
+        holder.orderItem.setText(f.getItem());
         holder.orderQuantity.setText(String.valueOf(f.getQuantity()));
+        holder.orderTime.setText(f.getTime());
+        holder.orderCustomer.setText(f.getUser());
+
+        // set orderID
+        String s = f.getOrderId();
+        holder.orderId.setText(s);
+
+        // set layout background
+        int i = Integer.valueOf(s);
+        if (i % 2 == 0){
+            holder.itemLayout.setBackgroundColor(mContext.getResources().getColor(android.R.color.white));
+        }
+
+
     }
 
     @Override
@@ -56,6 +76,8 @@ public class Order2Adapter extends RecyclerView.Adapter<Order2Adapter.Order2View
         TextView orderQuantity;
         TextView orderTime;
         TextView orderCustomer;
+        TextView orderId;
+        LinearLayout itemLayout;
 
         public Order2ViewHolder(View itemView) {
             super(itemView);
@@ -64,6 +86,8 @@ public class Order2Adapter extends RecyclerView.Adapter<Order2Adapter.Order2View
             orderItem = itemView.findViewById(R.id.orderItem);
             orderQuantity = itemView.findViewById(R.id.orderQuantity);
             orderTime = itemView.findViewById(R.id.orderTime);
+            itemLayout = itemView.findViewById(R.id.order_item_layout);
+            orderId = itemView.findViewById(R.id.orderId);
         }
     }
 }

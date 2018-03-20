@@ -46,6 +46,17 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mAuth.removeAuthStateListener(mAuthStateListener);
+    }
 
     public void viewOrders(View view) {
         startActivity(new Intent(MainActivity.this, OpenOrders2Activity.class));

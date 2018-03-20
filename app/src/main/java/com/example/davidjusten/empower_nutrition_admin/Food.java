@@ -7,68 +7,57 @@ package com.example.davidjusten.empower_nutrition_admin;
 
 public class Food {
 
-    private String mName, mPrice, mDesc, mImage;
-    private String mType;
-    private long mQuantity;
+    private String mUser, mItem, mQuantity, mTime, mOrderId;
 
     public Food() {
     }
 
-    public Food(String name, String price, String desc, long quantity, String image, String type) {
-        mName = name;
-        mPrice = price;
-        mDesc = desc;
-        mImage = image;
-        mType = type;
+    public Food(String user, String item, String quantity, String time, String orderId) {
+        mUser = user;
+        mItem = item;
+        mTime = time;
         mQuantity = quantity;
+        mOrderId = orderId;
 
     }
 
-    public String getName() {
-        return mName;
+    public String getUser() {
+        return mUser;
     }
 
-    public void setName(String mName) {
-        this.mName = mName;
+    public void setUser(String mUser) {
+        this.mUser = mUser;
     }
 
-    public String getPrice() {
-        return mPrice;
+    public String getItem() {
+        return mItem;
     }
 
-    public void setPrice(String mPrice) {
-        this.mPrice = mPrice;
+    public void setItem(String mItem) {
+        this.mItem = mItem;
     }
 
-    public String getDesc() {
-        return mDesc;
-    }
-
-    public void setDesc(String mDesc) {
-        this.mDesc = mDesc;
-    }
-
-    public String getImage() {
-        return mImage;
-    }
-
-    public void setImage(String mImage) {
-        this.mImage = mImage;
-    }
-
-    public String getType() {
-        return mType;
-    }
-
-    public void setType(String mType) {
-        this.mType = mType;
-    }
-
-    public long getQuantity() {
+    public String getQuantity() {
         return mQuantity;
     }
 
-    public void setQuantity(int mQuantity) {
+    public void setQuantity(String mQuantity) {
         this.mQuantity = mQuantity;
+    }
+
+    public String getTime() {
+        return mTime;
+    }
+
+    public void setTime(String mTime) {
+        this.mTime = mTime;
+    }
+
+    public String getOrderId() {
+        return mOrderId;
+    }
+
+    public void setOrderId(String mOrderId) {
+        this.mOrderId = mOrderId;
     }
 }
