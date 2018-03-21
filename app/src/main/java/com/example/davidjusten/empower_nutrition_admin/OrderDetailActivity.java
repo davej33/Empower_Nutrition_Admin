@@ -28,6 +28,7 @@ public class OrderDetailActivity extends AppCompatActivity {
     private FirebaseUser mCurrentUser;
     private DatabaseReference mDbUserData, mDbRefItem, mDbRefOrder, mDbCanceled, mDbReady;
     private Food mCurrentItem;
+    private Object mItemPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +42,13 @@ public class OrderDetailActivity extends AppCompatActivity {
         mDbRefOrder = FirebaseDatabase.getInstance().getReference().child("Orders");
 
         // get current Item
-        mCurrentItem = (Food) Order2Adapter.getCurrentItem();
+        mCurrentItem = (Food) Order2Adapter.getClickedItem();
+        Log.i(LOG_TAG,"currently clicked item: " + mCurrentItem.getItem());
 
         // get order key
-        mItem_key = OpenOrders2Activity.getKey();
 
+        mItem_key = mCurrentItem.getKey();
+        Log.i(LOG_TAG,"currently clicked key: " + mCurrentItem.getKey());
         // get ui views
         mCustomerTV = findViewById(R.id.orderDetailCustomer);
         mItemTV = findViewById(R.id.orderDetailItem);
@@ -58,8 +61,6 @@ public class OrderDetailActivity extends AppCompatActivity {
         mItemTV.setText(mCurrentItem.getItem());
         mOrderTime.setText(mCurrentItem.getTime());
         mQuantity.setText(mCurrentItem.getQuantity());
-
-
     }
 
     public void orderCompleteClicked(View view) {
@@ -74,13 +75,17 @@ public class OrderDetailActivity extends AppCompatActivity {
         // add
         final DatabaseReference dbRef = mDbReady.push();
         dbRef.setValue(mCurrentItem);
-        OpenOrders2Activity.updateAdapter();
+//        OpenOrders2Activity.updateAdapter();
         startActivity(new Intent(OrderDetailActivity.this, OpenOrders2Activity.class));
     }
 
     public void orderReadyClicked(View view) {
+        Log.i(LOG_TAG,"current item: " + mCurrentItem.getItem());
+        mDbRefOrder.child(mItem_key).child(mCurrentItem.getChildId()).child("isReady").setValue("true");//
+        startActivity(new Intent(OrderDetailActivity.this, OpenOrders2Activity.class));
 
 
+        // send notification
     }
 }
 

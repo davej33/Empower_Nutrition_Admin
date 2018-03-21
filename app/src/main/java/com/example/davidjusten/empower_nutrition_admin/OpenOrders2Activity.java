@@ -18,14 +18,18 @@ import java.util.List;
 
 public class OpenOrders2Activity extends AppCompatActivity {
 
+    private static final String LOG_TAG = OpenOrders2Activity.class.getSimpleName();
     private List<Food> mList;
     private RecyclerView mRv;
     private static Order2Adapter mAdapter;
     private static String orderKey;
+    private static DataSnapshot mSnapshot;
 
     public static String getKey() {
         return orderKey;
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +49,7 @@ public class OpenOrders2Activity extends AppCompatActivity {
         query.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                orderKey = dataSnapshot.getKey();
+                mSnapshot = dataSnapshot;
                 int i = 0;
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     String item = data.child("name").getValue().toString();
@@ -54,8 +58,11 @@ public class OpenOrders2Activity extends AppCompatActivity {
                     String time = data.child("time").getValue().toString();
                     String orderId = data.child("orderID").getValue().toString();
                     String childKey = String.valueOf(i++);
+                    String isReady = data.child("isReady").getValue().toString();
+                    String orderKey = dataSnapshot.getKey();
+                    Log.i(LOG_TAG, "order key: " + orderKey);
 
-                    Food f = new Food(user, item, quant, time, orderId, childKey);
+                    Food f = new Food(user, item, quant, time, orderId, childKey, isReady, orderKey);
                     mList.add(f);
 
                 }
@@ -71,6 +78,7 @@ public class OpenOrders2Activity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.i("tag", "Child removed run");
                 int i = 0;
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     String item = data.child("name").getValue().toString();
@@ -79,8 +87,9 @@ public class OpenOrders2Activity extends AppCompatActivity {
                     String time = data.child("time").getValue().toString();
                     String orderId = data.child("orderID").getValue().toString();
                     String childKey = String.valueOf(i++);
+                    String isReady = data.child("isReady").getValue().toString();
 
-                    Food f = new Food(user, item, quant, time, orderId, childKey);
+                    Food f = new Food(user, item, quant, time, orderId, childKey, isReady, orderKey);
                     mList.add(f);
 
                 }

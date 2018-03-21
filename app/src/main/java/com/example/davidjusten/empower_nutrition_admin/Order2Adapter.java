@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,16 +20,21 @@ import java.util.List;
 
 public class Order2Adapter extends RecyclerView.Adapter<Order2Adapter.Order2ViewHolder> {
 
+    private static final String LOG_TAG = Order2Adapter.class.getSimpleName();
     private static List<Food> mOrderList;
     private static Context mContext;
     private static Food mCurrentItem;
+    private int mLastPosition;
+    private static Food mClickedItem;
+    private static String mClickedItemKey;
+    private static int mAdapterPositionClicked;
 
     public Order2Adapter(Context context){
         mContext = context;
     }
 
-    public static Object getCurrentItem() {
-        return mCurrentItem;
+    public static Object getClickedItem() {
+        return mClickedItem;
     }
 
     @NonNull
@@ -40,11 +46,20 @@ public class Order2Adapter extends RecyclerView.Adapter<Order2Adapter.Order2View
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Order2ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final Order2ViewHolder holder, final int position) {
+
+
         mCurrentItem = mOrderList.get(position);
+        Log.i(LOG_TAG,"ADAPTER current item: " + mCurrentItem.getItem());
+        Log.i(LOG_TAG,"ADAPTER item is ready: " + mCurrentItem.getReady());
+
 
         holder.orderItem.setText(mCurrentItem.getItem());
         holder.orderQuantity.setText(String.valueOf(mCurrentItem.getQuantity()));
+        if(mCurrentItem.getReady().equals("true")){
+            holder.orderItem.setTextColor(mContext.getResources().getColor(android.R.color.holo_green_light));
+            holder.orderQuantity.setTextColor(mContext.getResources().getColor(android.R.color.holo_green_light));
+        }
         holder.orderTime.setText(mCurrentItem.getTime());
         holder.orderCustomer.setText(mCurrentItem.getUser());
 
@@ -61,6 +76,9 @@ public class Order2Adapter extends RecyclerView.Adapter<Order2Adapter.Order2View
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // get last position
+                mAdapterPositionClicked = holder.getAdapterPosition();
+                mClickedItem = mOrderList.get(mAdapterPositionClicked);
                 Intent intent = new Intent(mContext,OrderDetailActivity.class);
                 mContext.startActivity(intent);
             }
@@ -68,6 +86,9 @@ public class Order2Adapter extends RecyclerView.Adapter<Order2Adapter.Order2View
 
     }
 
+    public static int getItemPosition(){
+        return mAdapterPositionClicked;
+    }
     @Override
     public int getItemCount() {
         if (mOrderList != null) {
