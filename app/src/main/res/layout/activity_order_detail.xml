@@ -39,12 +39,14 @@
         android:text="Ready" />
 
     <Button
-        android:id="@+id/orderCancel"
+        android:id="@+id/orderComplete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:onClick="orderCancelClicked"
-        android:text="Cancel" />
+        android:onClick="orderCompleteClicked"
+        android:text="Complete" />
+
+
 
 
 </LinearLayout>

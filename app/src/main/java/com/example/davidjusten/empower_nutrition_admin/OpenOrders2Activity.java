@@ -20,7 +20,7 @@ public class OpenOrders2Activity extends AppCompatActivity {
 
     private List<Food> mList;
     private RecyclerView mRv;
-    private Order2Adapter mAdapter;
+    private static Order2Adapter mAdapter;
     private static String orderKey;
 
     public static String getKey() {
@@ -61,7 +61,7 @@ public class OpenOrders2Activity extends AppCompatActivity {
                 }
 
                 Order2Adapter.setmOrderList(mList);
-                mAdapter.notifyDataSetChanged();
+                updateAdapter();
             }
 
             @Override
@@ -86,6 +86,7 @@ public class OpenOrders2Activity extends AppCompatActivity {
                 }
 
                 Order2Adapter.setmOrderList(mList);
+                updateAdapter();
                 mAdapter.notifyDataSetChanged();
             }
 
@@ -99,5 +100,15 @@ public class OpenOrders2Activity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public static void updateAdapter() {
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateAdapter();
     }
 }

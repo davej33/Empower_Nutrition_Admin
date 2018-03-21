@@ -1,5 +1,6 @@
 package com.example.davidjusten.empower_nutrition_admin;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -61,56 +62,25 @@ public class OrderDetailActivity extends AppCompatActivity {
 
     }
 
-    public void orderReadyClicked(View view) {
+    public void orderCompleteClicked(View view) {
 
         // remove value from order bucket
-        Log.i(LOG_TAG,"remove item key / child key: " + mItem_key + " / " + mCurrentItem.getChildId());
+        Log.i(LOG_TAG, "remove item key / child key: " + mItem_key + " / " + mCurrentItem.getChildId());
         mDbRefOrder.child(mItem_key).child(mCurrentItem.getChildId()).removeValue();
 
         // ref to item ready bucket
-        mDbReady = FirebaseDatabase.getInstance().getReference().child("item_ready");
+        mDbReady = FirebaseDatabase.getInstance().getReference().child("sale_complete");
 
         // add
         final DatabaseReference dbRef = mDbReady.push();
         dbRef.setValue(mCurrentItem);
-//        mDbUserData.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                dbRef.child("order_key").setValue(mItem_key);
-//                dbRef.child("user_name").setValue(mUser_name);
-//                dbRef.child("item_name").setValue(mItem_name);
-//                dbRef.child("item_time").setValue(mItem_time);
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
+        OpenOrders2Activity.updateAdapter();
+        startActivity(new Intent(OrderDetailActivity.this, OpenOrders2Activity.class));
     }
 
-    public void orderCancelClicked(View view) {
+    public void orderReadyClicked(View view) {
 
-        mDbRefOrder.child(mItem_key).removeValue();
-
-        mDbCanceled = FirebaseDatabase.getInstance().getReference().child("item_canceled");
-
-        final DatabaseReference dbRefCancel = mDbCanceled.push();
-        mDbUserData.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                dbRefCancel.child("order_key").setValue(mItem_key);
-                dbRefCancel.child("user_name").setValue(mUser_name);
-                dbRefCancel.child("item_name").setValue(mItem_name);
-                dbRefCancel.child("item_time").setValue(mItem_time);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
     }
 }
+
