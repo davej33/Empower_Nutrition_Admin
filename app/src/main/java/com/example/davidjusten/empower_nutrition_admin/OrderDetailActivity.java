@@ -21,85 +21,73 @@ public class OrderDetailActivity extends AppCompatActivity {
     private static final String LOG_TAG = OrderDetailActivity.class.getSimpleName();
 
     private String mItem_key, mItem_name, mItem_time, mUser_name, mImage_string;
-    private TextView mCustomerTV, mItemTV, mOrderTime;
+    private TextView mCustomerTV, mItemTV, mOrderTime, mQuantity;
     private ImageView mImageView;
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
     private DatabaseReference mDbUserData, mDbRefItem, mDbRefOrder, mDbCanceled, mDbReady;
+    private Food mCurrentItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_detail);
 
+        // get FirebaseAuth objects
+        mAuth = FirebaseAuth.getInstance();
+        mCurrentUser = mAuth.getCurrentUser();
+        mDbUserData = FirebaseDatabase.getInstance().getReference().child(mCurrentUser.getUid());
+        mDbRefOrder = FirebaseDatabase.getInstance().getReference().child("Orders");
+
+        // get current Item
+        mCurrentItem = (Food) Order2Adapter.getCurrentItem();
+
+        // get order key
+        mItem_key = OpenOrders2Activity.getKey();
+
         // get ui views
         mCustomerTV = findViewById(R.id.orderDetailCustomer);
         mItemTV = findViewById(R.id.orderDetailItem);
         mImageView = findViewById(R.id.orderDetailImage);
         mOrderTime = findViewById(R.id.orderDetailTime);
+        mQuantity = findViewById(R.id.orderDetailQuantity);
 
-        // get Firebase objects
-        mAuth = FirebaseAuth.getInstance();
-        mDbRefItem = FirebaseDatabase.getInstance().getReference().child("Item");
-        mDbRefOrder = FirebaseDatabase.getInstance().getReference().child("Orders");
+        // set views
+        mCustomerTV.setText(mCurrentItem.getUser());
+        mItemTV.setText(mCurrentItem.getItem());
+        mOrderTime.setText(mCurrentItem.getTime());
+        mQuantity.setText(mCurrentItem.getQuantity());
 
-        // get item data from intent
-        mItem_key = getIntent().getStringExtra("item_key");
-        mItem_name = getIntent().getStringExtra("item_name");
-        mItem_time = getIntent().getStringExtra("item_time");
-        mUser_name = getIntent().getStringExtra("user_name");
-
-        // get order key
-
-        // get current user
-        mCurrentUser = mAuth.getCurrentUser();
-        mDbUserData = FirebaseDatabase.getInstance().getReference().child(mCurrentUser.getUid());
-
-        // extract data
-        mDbRefItem.child(mItem_key).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                mCustomerTV.setText(mUser_name);
-                mItemTV.setText(mItem_name);
-                mOrderTime.setText(mItem_time);
-                Picasso.get().load(mImage_string).into(mImageView); // Todo: add defaults
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
     }
 
     public void orderReadyClicked(View view) {
 
         // remove value from order bucket
-        mDbRefOrder.child(mItem_key).removeValue();
+        Log.i(LOG_TAG,"remove item key / child key: " + mItem_key + " / " + mCurrentItem.getChildId());
+        mDbRefOrder.child(mItem_key).child(mCurrentItem.getChildId()).removeValue();
 
         // ref to item ready bucket
         mDbReady = FirebaseDatabase.getInstance().getReference().child("item_ready");
 
         // add
         final DatabaseReference dbRef = mDbReady.push();
-        mDbUserData.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                dbRef.child("order_key").setValue(mItem_key);
-                dbRef.child("user_name").setValue(mUser_name);
-                dbRef.child("item_name").setValue(mItem_name);
-                dbRef.child("item_time").setValue(mItem_time);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        dbRef.setValue(mCurrentItem);
+//        mDbUserData.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                dbRef.child("order_key").setValue(mItem_key);
+//                dbRef.child("user_name").setValue(mUser_name);
+//                dbRef.child("item_name").setValue(mItem_name);
+//                dbRef.child("item_time").setValue(mItem_time);
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 
     public void orderCancelClicked(View view) {

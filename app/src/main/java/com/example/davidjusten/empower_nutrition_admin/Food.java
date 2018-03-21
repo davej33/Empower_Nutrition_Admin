@@ -7,17 +7,18 @@ package com.example.davidjusten.empower_nutrition_admin;
 
 public class Food {
 
-    private String mUser, mItem, mQuantity, mTime, mOrderId;
+    private String mUser, mItem, mQuantity, mTime, mOrderId, mChildId;
 
     public Food() {
     }
 
-    public Food(String user, String item, String quantity, String time, String orderId) {
+    public Food(String user, String item, String quantity, String time, String orderId, String childId) {
         mUser = user;
         mItem = item;
         mTime = time;
         mQuantity = quantity;
         mOrderId = orderId;
+        mChildId = childId;
 
     }
 
@@ -59,5 +60,13 @@ public class Food {
 
     public void setOrderId(String mOrderId) {
         this.mOrderId = mOrderId;
+    }
+
+    public String getChildId() {
+        return mChildId;
+    }
+
+    public void setChildId(String mChildId) {
+        this.mChildId = mChildId;
     }
 }

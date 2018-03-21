@@ -21,6 +21,11 @@ public class OpenOrders2Activity extends AppCompatActivity {
     private List<Food> mList;
     private RecyclerView mRv;
     private Order2Adapter mAdapter;
+    private static String orderKey;
+
+    public static String getKey() {
+        return orderKey;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,22 +45,23 @@ public class OpenOrders2Activity extends AppCompatActivity {
         query.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.i("OO2", "children count: " + dataSnapshot.getChildrenCount());
+                orderKey = dataSnapshot.getKey();
+                int i = 0;
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     String item = data.child("name").getValue().toString();
                     String user = data.child("user").getValue().toString();
                     String quant = data.child("quantity").getValue().toString();
                     String time = data.child("time").getValue().toString();
                     String orderId = data.child("orderID").getValue().toString();
+                    String childKey = String.valueOf(i++);
 
-                    Food f = new Food(user, item, quant, time, orderId);
+                    Food f = new Food(user, item, quant, time, orderId, childKey);
                     mList.add(f);
 
                 }
 
                 Order2Adapter.setmOrderList(mList);
                 mAdapter.notifyDataSetChanged();
-                Log.i("OO2", "List count: " + mList.size());
             }
 
             @Override
@@ -65,14 +71,16 @@ public class OpenOrders2Activity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                int i = 0;
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     String item = data.child("name").getValue().toString();
                     String user = data.child("user").getValue().toString();
                     String quant = data.child("quantity").getValue().toString();
                     String time = data.child("time").getValue().toString();
                     String orderId = data.child("orderID").getValue().toString();
+                    String childKey = String.valueOf(i++);
 
-                    Food f = new Food(user, item, quant, time, orderId);
+                    Food f = new Food(user, item, quant, time, orderId, childKey);
                     mList.add(f);
 
                 }

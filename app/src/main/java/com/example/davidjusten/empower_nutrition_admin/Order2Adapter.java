@@ -1,6 +1,7 @@
 package com.example.davidjusten.empower_nutrition_admin;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
@@ -20,10 +21,16 @@ public class Order2Adapter extends RecyclerView.Adapter<Order2Adapter.Order2View
 
     private static List<Food> mOrderList;
     private static Context mContext;
+    private static Food mCurrentItem;
 
     public Order2Adapter(Context context){
         mContext = context;
     }
+
+    public static Object getCurrentItem() {
+        return mCurrentItem;
+    }
+
     @NonNull
     @Override
     public Order2ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -34,15 +41,15 @@ public class Order2Adapter extends RecyclerView.Adapter<Order2Adapter.Order2View
 
     @Override
     public void onBindViewHolder(@NonNull Order2ViewHolder holder, int position) {
-        Food f = mOrderList.get(position);
+        mCurrentItem = mOrderList.get(position);
 
-        holder.orderItem.setText(f.getItem());
-        holder.orderQuantity.setText(String.valueOf(f.getQuantity()));
-        holder.orderTime.setText(f.getTime());
-        holder.orderCustomer.setText(f.getUser());
+        holder.orderItem.setText(mCurrentItem.getItem());
+        holder.orderQuantity.setText(String.valueOf(mCurrentItem.getQuantity()));
+        holder.orderTime.setText(mCurrentItem.getTime());
+        holder.orderCustomer.setText(mCurrentItem.getUser());
 
         // set orderID
-        String s = f.getOrderId();
+        String s = mCurrentItem.getOrderId();
         holder.orderId.setText(s);
 
         // set layout background
@@ -51,6 +58,13 @@ public class Order2Adapter extends RecyclerView.Adapter<Order2Adapter.Order2View
             holder.itemLayout.setBackgroundColor(mContext.getResources().getColor(android.R.color.white));
         }
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext,OrderDetailActivity.class);
+                mContext.startActivity(intent);
+            }
+        });
 
     }
 
